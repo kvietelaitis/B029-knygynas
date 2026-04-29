@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Knygynas.Data;
+using Knygynas.Services.Book;
 using Knygynas.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,7 +17,7 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
-// Register services
+builder.Services.AddScoped<BookService>();
 builder.Services.AddScoped<IBookstoreService, BookstoreService>();
 
 var app = builder.Build();

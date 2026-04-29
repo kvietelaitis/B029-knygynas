@@ -1,0 +1,91 @@
+@model IEnumerable<Knygynas.Models.Book>
+@{
+    ViewData["Title"] = "List";
+}
+
+<style>
+    .filters {
+        display: grid;
+        grid-template-columns: repeat(4, max-content) max-content;
+        gap: .75rem 1rem; /* row/col gap */
+        align-items: end; /* align inputs + submit */
+        padding-bottom: 1rem;
+    }
+
+    .filters .field label {
+        display: block;       /* label above input */
+        margin-bottom: .25rem;
+    }
+
+    .filters .field input {
+        width: 12rem;         /* adjust as you like */
+    }
+
+    .filters .actions input {
+        height: 2.1rem;       /* roughly aligns with input height */
+    }
+</style>
+
+<div class="container mt-4">
+    <h2>All Books</h2>
+    <form asp-action="List" method="get" class="filters">
+        <div class="field">
+            <label for="Title">Title:</label>
+            <input id="Title" name="Title" value="@Context.Request.Query["Title"]" />
+        </div>
+
+        <div class="field">
+            <label for="AuthorName">Author:</label>
+            <input id="AuthorName" name="AuthorName" value="@Context.Request.Query["AuthorName"]" />
+        </div>
+
+        <div class="field">
+            <label for="YearFrom">Year from:</label>
+            <input id="YearFrom" name="YearFrom" value="@Context.Request.Query["YearFrom"]" />
+        </div>
+
+        <div class="field">
+            <label for="YearTo">Year to:</label>
+            <input id="YearTo" name="YearTo" value="@Context.Request.Query["YearTo"]" />
+        </div>
+
+        <div class="actions">
+            <input id="submitFilters" type="submit" value="Search" />
+        </div>
+    </form>
+    
+    <table class="table table-striped table-hover">
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Release Date</th>
+            <th>Page count</th>
+            <th>Genre</th>
+            <th>Price</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var book in Model)
+        {
+            <tr>
+                <td>@book.Title</td>
+                <td>
+                    @string.Join(", ", book.AuthorRoles.Select(ar => ar.Author.Name))
+                </td>
+                <td>@book.ReleaseDate.ToShortDateString()</td>
+                <td>@book.PageCount</td>
+                <td>
+                    @string.Join(", ", book.BookCategories.Select(bc => bc.Category.Name))
+                </td>
+                <td>$@book.Price.ToString("F2")</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@book.ISBN"
+                       class="btn btn-sm btn-info">Details</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
