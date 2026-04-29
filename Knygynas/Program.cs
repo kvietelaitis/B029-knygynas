@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Knygynas.Data;
 using Knygynas.Services.Book;
+using Knygynas.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,10 +13,12 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<BookService>();
+builder.Services.AddScoped<IBookstoreService, BookstoreService>();
 
 var app = builder.Build();
 
@@ -45,5 +48,44 @@ app.MapControllerRoute(
 
 app.MapRazorPages()
    .WithStaticAssets();
+
+// Seed Admin role and test users
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+    
+    // Seed roles
+    var roles = new[] { "Admin" };
+    foreach (var role in roles)
+    {
+        if (!await roleManager.RoleExistsAsync(role))
+        {
+            await roleManager.CreateAsync(new IdentityRole(role));
+        }
+    }
+
+    // Seed test users
+    var testUsers = new[]
+    {
+        new { Email = "admin@bookstore.com", Password = "Admin@123456", Role = "Admin" },
+        new { Email = "user@bookstore.com", Password = "User@123456", Role = "" }
+    };
+
+    foreach (var testUser in testUsers)
+    {
+        var user = await userManager.FindByEmailAsync(testUser.Email);
+        if (user == null)
+        {
+            user = new IdentityUser { UserName = testUser.Email, Email = testUser.Email, EmailConfirmed = true };
+            await userManager.CreateAsync(user, testUser.Password);
+            
+            if (!string.IsNullOrEmpty(testUser.Role))
+            {
+                await userManager.AddToRoleAsync(user, testUser.Role);
+            }
+        }
+    }
+}
 
 app.Run();

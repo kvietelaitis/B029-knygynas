@@ -18,6 +18,7 @@ namespace Knygynas.Data
         public DbSet<BookCategory> BookCategories { get; set; }
         public DbSet<Author> Authors { get; set; }
         public DbSet<AuthorRole> AuthorRoles { get; set; }
+        public DbSet<Bookstore> Bookstores { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
