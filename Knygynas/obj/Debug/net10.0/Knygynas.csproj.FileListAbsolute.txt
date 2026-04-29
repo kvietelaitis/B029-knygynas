@@ -2,7 +2,6 @@
 /Users/martynas/Documents/personal/projects/b029-knygynas/Knygynas/bin/Debug/net10.0/appsettings.json
 /Users/martynas/Documents/personal/projects/b029-knygynas/Knygynas/bin/Debug/net10.0/Knygynas.staticwebassets.runtime.json
 /Users/martynas/Documents/personal/projects/b029-knygynas/Knygynas/bin/Debug/net10.0/Knygynas.staticwebassets.endpoints.json
-/Users/martynas/Documents/personal/projects/b029-knygynas/Knygynas/bin/Debug/net10.0/app.db
 /Users/martynas/Documents/personal/projects/b029-knygynas/Knygynas/bin/Debug/net10.0/Knygynas
 /Users/martynas/Documents/personal/projects/b029-knygynas/Knygynas/bin/Debug/net10.0/Knygynas.deps.json
 /Users/martynas/Documents/personal/projects/b029-knygynas/Knygynas/bin/Debug/net10.0/Knygynas.runtimeconfig.json

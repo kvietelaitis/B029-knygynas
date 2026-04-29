@@ -1,0 +1,36 @@
+@model IEnumerable<Knygynas.Models.Book>
+@{
+    ViewData["Title"] = "List";
+}
+
+<div class="container mt-4">
+    <h2>All Books</h2>
+    <table class="table table-striped table-hover">
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Page count</th>
+            <th>Price</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var book in Model)
+        {
+            <tr>
+                <td>@book.Title</td>
+                <td>
+                    @string.Join(", ", book.AuthorRoles.Select(ar => ar.Author.Name))
+                </td>
+                <td>@book.PageCount</td>
+                <td>$@book.Price.ToString("F2")</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@book.ISBN"
+                       class="btn btn-sm btn-info">Details</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
