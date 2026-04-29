@@ -14,9 +14,15 @@ public class BookController : Controller
         _bookService = bookService;
     }
     
-    public IActionResult List()
+    public IActionResult List([FromQuery] BookFilter filter)
     {
-        var books = _bookService.GetBooks();
+        var books = _bookService.GetBooks(filter);
         return View(books);
+    }
+
+    public IActionResult Details(string id)
+    {
+        var book = _bookService.GetBook(id);
+        return View(book);
     }
 }

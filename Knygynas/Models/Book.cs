@@ -24,8 +24,11 @@ public class Book
     
     public ICollection<AuthorRole> AuthorRoles { get; set; }
     
+    public ICollection<BookCategory> BookCategories { get; set; }
+    
     public Book()
     {
         AuthorRoles = new List<AuthorRole>();
+        BookCategories = new List<BookCategory>();
     }
 }

@@ -1,0 +1,169 @@
+@model Knygynas.Models.Book
+
+@{
+    ViewBag.Title = Model?.Title ?? "Book details";
+    Layout = "_Layout";
+}
+
+@if (Model == null)
+{
+    <div class="alert alert-warning" role="alert">
+        Book not found.
+    </div>
+}
+else
+{
+    <div class="book-details">
+        <div class="d-flex align-items-start justify-content-between gap-3 flex-wrap mb-3">
+            <div>
+                <h2 class="mb-1">@Model.Title</h2>
+                <div class="text-muted">
+                    <span class="me-2">ISBN:</span><strong>@Model.ISBN</strong>
+                </div>
+            </div>
+
+            <div class="d-flex align-items-center gap-2">
+                @if (Model.Available)
+                {
+                    <span class="badge bg-success">Available</span>
+                }
+                else
+                {
+                    <span class="badge bg-secondary">Not available</span>
+                }
+
+                <span class="badge bg-light text-dark border">
+                    Released: @Model.ReleaseDate.ToString("yyyy-MM-dd")
+                </span>
+            </div>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-4 col-md-3">Page count</dt>
+                    <dd class="col-sm-8 col-md-9">@Model.PageCount</dd>
+
+                    <dt class="col-sm-4 col-md-3">Language</dt>
+                    <dd class="col-sm-8 col-md-9">@Model.Language</dd>
+
+                    <dt class="col-sm-4 col-md-3">EAN code</dt>
+                    <dd class="col-sm-8 col-md-9">@Model.EANCode</dd>
+
+                    <dt class="col-sm-4 col-md-3">Dimensions</dt>
+                    <dd class="col-sm-8 col-md-9">
+                        @{
+                            var hasAnyDim = Model.Length.HasValue || Model.Width.HasValue || Model.Height.HasValue || Model.Weight.HasValue;
+                        }
+
+                        @if (!hasAnyDim)
+                        {
+                            <span class="text-muted">-</span>
+                        }
+                        else
+                        {
+                            <div class="d-flex flex-wrap gap-2">
+                                @if (Model.Length.HasValue)
+                                {
+                                    <span class="chip">Length: @Model.Length</span>
+                                }
+                                @if (Model.Width.HasValue)
+                                {
+                                    <span class="chip">Width: @Model.Width</span>
+                                }
+                                @if (Model.Height.HasValue)
+                                {
+                                    <span class="chip">Height: @Model.Height</span>
+                                }
+                                @if (Model.Weight.HasValue)
+                                {
+                                    <span class="chip">Weight: @Model.Weight</span>
+                                }
+                            </div>
+                        }
+                    </dd>
+
+                    <dt class="col-sm-4 col-md-3">Price</dt>
+                    <dd class="col-sm-8 col-md-9">
+                        <span class="price">@Model.Price.ToString("0.00")</span>
+
+                        @if (Model.Discount != null)
+                        {
+                            <span class="ms-2 badge bg-warning text-dark">Discount #@Model.DiscountId</span>
+                        }
+                    </dd>
+
+                    <dt class="col-sm-4 col-md-3">Authors</dt>
+                    <dd class="col-sm-8 col-md-9">
+                        @if (Model.AuthorRoles == null || !Model.AuthorRoles.Any())
+                        {
+                            <span class="text-muted">-</span>
+                        }
+                        else
+                        {
+                            <div class="d-flex flex-wrap gap-2">
+                                @foreach (var a in Model.AuthorRoles.Select(b => b.Author).Distinct())
+                                {
+                                    <span class="chip">@a.Name</span>
+                                }
+                            </div>
+                        }
+                    </dd>
+
+                    <dt class="col-sm-4 col-md-3">Categories</dt>
+                    <dd class="col-sm-8 col-md-9">
+                        @if (Model.BookCategories == null || !Model.BookCategories.Any())
+                        {
+                            <span class="text-muted">-</span>
+                        }
+                        else
+                        {
+                            <div class="d-flex flex-wrap gap-2">
+                                @foreach (var c in Model.BookCategories.Select(b => b.Category).Distinct())
+                                {
+                                    <span class="chip chip-blue">@c.Name</span>
+                                }
+                            </div>
+                        }
+                    </dd>
+                </dl>
+            </div>
+        </div>
+
+        <div class="mt-3 d-flex gap-2">
+            <a asp-action="List" class="btn btn-outline-secondary">Back to list</a>
+            @* Example:
+            <a asp-action="Edit" asp-route-id="@Model.ISBN" class="btn btn-primary">Edit</a>
+            *@
+        </div>
+    </div>
+
+    <style>
+        .book-details h2 { font-weight: 650; }
+
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            padding: .25rem .55rem;
+            border-radius: 999px;
+            border: 1px solid rgba(0,0,0,.12);
+            background: rgba(0,0,0,.03);
+            font-size: .9rem;
+        }
+
+        .chip-blue {
+            border-color: rgba(13,110,253,.25);
+            background: rgba(13,110,253,.07);
+        }
+
+        .price {
+            font-weight: 700;
+            font-size: 1.05rem;
+        }
+
+        /* tighten up dt/dd spacing a bit */
+        .book-details dt { color: rgba(0,0,0,.65); }
+        .book-details dd { margin-bottom: .65rem; }
+        .book-details dl.row dd:last-child { margin-bottom: 0; }
+    </style>
+}

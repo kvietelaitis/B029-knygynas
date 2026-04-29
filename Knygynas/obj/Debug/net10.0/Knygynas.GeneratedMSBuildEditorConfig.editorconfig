@@ -34,6 +34,10 @@ build_property.EnableCodeStyleSeverity =
 build_metadata.AdditionalFiles.TargetPath = QXJlYXMvSWRlbnRpdHkvUGFnZXMvX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[/Users/martynas/Documents/personal/projects/b029-knygynas/Knygynas/Views/Book/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQm9vay9EZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [/Users/martynas/Documents/personal/projects/b029-knygynas/Knygynas/Views/Book/List.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQm9vay9MaXN0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
