@@ -1,0 +1,39 @@
+@model Knygynas.Models.Bookstore
+
+@{
+    ViewData["Title"] = "Delete Bookstore";
+}
+
+<h1>Delete Bookstore</h1>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>@Model.City</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.City)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.City)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Address)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Address)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CreatedDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CreatedDate)
+        </dd>
+    </dl>
+
+    <form asp-controller="Bookstore" asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Back to Home</a>
+    </form>
+</div>
