@@ -1,0 +1,84 @@
+using Microsoft.EntityFrameworkCore;
+using Knygynas.Data;
+using Knygynas.Models;
+
+namespace Knygynas.Services;
+
+public class BookstoreService : IBookstoreService
+{
+    private readonly ApplicationDbContext _context;
+
+    public BookstoreService(ApplicationDbContext context)
+    {
+        _context = context;
+    }
+
+    public async Task<IEnumerable<Bookstore>> GetAllBookstoresAsync()
+    {
+        return await _context.Bookstores.ToListAsync();
+    }
+
+    public async Task<Bookstore?> GetBookstoreByIdAsync(int id)
+    {
+        return await _context.Bookstores.FindAsync(id);
+    }
+
+    public async Task<Bookstore> CreateBookstoreAsync(string city, string address)
+    {
+        var bookstore = new Bookstore
+        {
+            City = city,
+            Address = address,
+            CreatedDate = DateTime.UtcNow
+        };
+
+        _context.Add(bookstore);
+        await _context.SaveChangesAsync();
+        return bookstore;
+    }
+
+    public async Task<bool> UpdateBookstoreAsync(int id, string city, string address)
+    {
+        var bookstore = await _context.Bookstores.FindAsync(id);
+        if (bookstore == null)
+        {
+            return false;
+        }
+
+        bookstore.City = city;
+        bookstore.Address = address;
+
+        try
+        {
+            _context.Update(bookstore);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!BookstoreExists(id))
+            {
+                return false;
+            }
+            throw;
+        }
+    }
+
+    public async Task<bool> DeleteBookstoreAsync(int id)
+    {
+        var bookstore = await _context.Bookstores.FindAsync(id);
+        if (bookstore == null)
+        {
+            return false;
+        }
+
+        _context.Bookstores.Remove(bookstore);
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
+    public bool BookstoreExists(int id)
+    {
+        return _context.Bookstores.Any(e => e.Id == id);
+    }
+}

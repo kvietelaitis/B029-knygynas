@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Knygynas")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f78b3fee875b3c0e955b498a464dc51010b5a9d3")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+97a5a8c74b6e54974151e01758e2e710a8742c19")]
 [assembly: System.Reflection.AssemblyProductAttribute("Knygynas")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Knygynas")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
