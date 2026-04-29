@@ -1,0 +1,66 @@
+@model List<Microsoft.AspNetCore.Identity.IdentityUser>
+
+@{
+    ViewData["Title"] = "Workers";
+    var generatedPassword = TempData["WorkerPassword"] as string;
+    var generatedEmail = TempData["WorkerEmail"] as string;
+}
+
+<h2>Workers</h2>
+
+@if (!string.IsNullOrWhiteSpace(generatedPassword))
+{
+    <div class="alert alert-success" role="alert">
+        Worker created. Temporary password for <strong>@(generatedEmail ?? "worker")</strong>:
+        <strong>@generatedPassword</strong>
+    </div>
+}
+
+<button class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#workerModal"
+        data-url="@Url.Action("Create")">
+    Create
+</button>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Email</th>
+            <th>UserName</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var worker in Model)
+        {
+            <tr>
+                <td>@worker.Email</td>
+                <td>@worker.UserName</td>
+                <td>
+                    <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal"
+                            data-delete-url="@Url.Action("Delete")" data-delete-id="@worker.Id"
+                            data-delete-title="Remove worker" data-delete-message="Delete worker @worker.Email?">
+                        Delete
+                    </button>
+
+                    <button class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#workerModal"
+                            data-url="@Url.Action("Edit", new { id = worker.Id })">
+                        Edit
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Single modal outside the loop -->
+<div class="modal fade" id="workerModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content" id="workerModalContent">
+            <!-- Partial loads here -->
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
