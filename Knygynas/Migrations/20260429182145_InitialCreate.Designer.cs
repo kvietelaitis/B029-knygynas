@@ -98,6 +98,51 @@ namespace Knygynas.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Knygynas.Models.Bookstore", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Bookstores");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Address = "Gedimino pr. 1",
+                            City = "Vilnius",
+                            CreatedDate = new DateTime(2024, 1, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Address = "Laisves al. 10",
+                            City = "Kaunas",
+                            CreatedDate = new DateTime(2024, 2, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Address = "H. Manto g. 7",
+                            City = "Klaipeda",
+                            CreatedDate = new DateTime(2024, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
+                });
+
             modelBuilder.Entity("Knygynas.Models.Book", b =>
                 {
                     b.Property<string>("ISBN")

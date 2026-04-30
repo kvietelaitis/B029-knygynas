@@ -16,9 +16,10 @@ public class BookstoreController : Controller
 
     // GET: Admin/Bookstore
     [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(string? search)
     {
-        var bookstores = await _bookstoreService.GetAllBookstoresAsync();
+        ViewData["Search"] = search;
+        var bookstores = await _bookstoreService.GetAllBookstoresAsync(search);
         return View(bookstores);
     }
 

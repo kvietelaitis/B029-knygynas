@@ -27,7 +27,7 @@ namespace Knygynas.Data
             // Configure relationships if needed
             modelBuilder.Entity<BookCategory>()
                 .HasKey(bc => new { bc.BookISBN, bc.CategoryID });
-            
+
             modelBuilder.Entity<AuthorRole>()
                 .HasKey(ar => new { ar.AuthorID, ar.BookISBN });
 
@@ -52,13 +52,13 @@ namespace Knygynas.Data
                 new Author { Id = 2, Name = "Harper Lee", Biography = "American novelist." },
                 new Author { Id = 3, Name = "Frank Herbert", Biography = "American science fiction author." }
             );
-            
+
             modelBuilder.Entity<AuthorRole>().HasData(
                 new AuthorRole { AuthorID = 1, BookISBN = "978-0-14-028329-3", RoleName = "Author" }, // 1984
                 new AuthorRole { AuthorID = 2, BookISBN = "978-0-06-112008-4", RoleName = "Author" }, // Mockingbird
                 new AuthorRole { AuthorID = 3, BookISBN = "978-0-7653-7793-1", RoleName = "Author" }  // Dune
             );
-            
+
             // Seed Discounts
             modelBuilder.Entity<Discount>().HasData(
                 new Discount { Id = 1, Amount = 0 },
@@ -73,11 +73,18 @@ namespace Knygynas.Data
                 new Publisher { Id = 3, Name = "Alma Littera", Address = "Address3, Lithuania", PhoneNumber = "+35988888888" }
             );
 
+            // Seed Bookstores
+            modelBuilder.Entity<Bookstore>().HasData(
+                new Bookstore { Id = 1, City = "Vilnius", Address = "Gedimino pr. 1", CreatedDate = new DateTime(2024, 1, 15) },
+                new Bookstore { Id = 2, City = "Kaunas", Address = "Laisves al. 10", CreatedDate = new DateTime(2024, 2, 5) },
+                new Bookstore { Id = 3, City = "Klaipeda", Address = "H. Manto g. 7", CreatedDate = new DateTime(2024, 3, 1) }
+            );
+
             // Seed Categories
             modelBuilder.Entity<Category>().HasData(
-                new Category { Id = 1, Name = "Fiction",  Description = "Fiction" },
-                new Category { Id = 2, Name = "Non-Fiction",  Description = "Non-Fiction" },
-                new Category { Id = 3, Name = "Science Fiction",  Description = "Science Fiction" },
+                new Category { Id = 1, Name = "Fiction", Description = "Fiction" },
+                new Category { Id = 2, Name = "Non-Fiction", Description = "Non-Fiction" },
+                new Category { Id = 3, Name = "Science Fiction", Description = "Science Fiction" },
                 new Category { Id = 4, Name = "History", Description = "History" }
             );
 

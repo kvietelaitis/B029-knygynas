@@ -111,6 +111,21 @@ namespace Knygynas.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Bookstores",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    City = table.Column<string>(type: "TEXT", nullable: false),
+                    Address = table.Column<string>(type: "TEXT", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Bookstores", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -342,6 +357,16 @@ namespace Knygynas.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "Bookstores",
+                columns: new[] { "Id", "Address", "City", "CreatedDate" },
+                values: new object[,]
+                {
+                    { 1, "Gedimino pr. 1", "Vilnius", new DateTime(2024, 1, 15, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 2, "Laisves al. 10", "Kaunas", new DateTime(2024, 2, 5, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 3, "H. Manto g. 7", "Klaipeda", new DateTime(2024, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) }
+                });
+
+            migrationBuilder.InsertData(
                 table: "Books",
                 columns: new[] { "ISBN", "Available", "DiscountId", "EANCode", "Height", "Language", "Length", "PageCount", "Price", "PublisherId", "ReleaseDate", "Title", "Weight", "Width" },
                 values: new object[,]
@@ -471,6 +496,9 @@ namespace Knygynas.Migrations
 
             migrationBuilder.DropTable(
                 name: "Discounts");
+
+            migrationBuilder.DropTable(
+                name: "Bookstores");
 
             migrationBuilder.DropTable(
                 name: "Publishers");

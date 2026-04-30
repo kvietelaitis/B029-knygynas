@@ -13,9 +13,22 @@ public class BookstoreService : IBookstoreService
         _context = context;
     }
 
-    public async Task<IEnumerable<Bookstore>> GetAllBookstoresAsync()
+    public async Task<IEnumerable<Bookstore>> GetAllBookstoresAsync(string? search)
     {
-        return await _context.Bookstores.ToListAsync();
+        var query = _context.Bookstores.AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            var like = $"%{search.Trim()}%";
+            query = query.Where(bookstore =>
+                EF.Functions.Like(bookstore.City, like) ||
+                EF.Functions.Like(bookstore.Address, like));
+        }
+
+        return await query
+            .OrderBy(bookstore => bookstore.City)
+            .ThenBy(bookstore => bookstore.Address)
+            .ToListAsync();
     }
 
     public async Task<Bookstore?> GetBookstoreByIdAsync(int id)
