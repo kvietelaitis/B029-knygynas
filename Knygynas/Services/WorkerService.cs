@@ -1,6 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Knygynas.Services;
 
@@ -15,9 +16,19 @@ public class WorkerService
         _roleManager = roleManager;
     }
 
-    public async Task<List<IdentityUser>> GetWorkersAsync()
+    public async Task<List<IdentityUser>> GetWorkersAsync(string? search)
     {
-        var users = _userManager.Users.ToList();
+        var query = _userManager.Users.AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            var like = $"%{search.Trim()}%";
+            query = query.Where(user =>
+                (user.Email != null && EF.Functions.Like(user.Email, like)) ||
+                (user.UserName != null && EF.Functions.Like(user.UserName, like)));
+        }
+
+        var users = await query.ToListAsync();
         var workers = new List<IdentityUser>();
 
         foreach (var user in users)

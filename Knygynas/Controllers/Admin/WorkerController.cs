@@ -16,9 +16,10 @@ public class WorkerController : Controller
         _workerService = workerService;
     }
 
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(string? search)
     {
-        var workers = await _workerService.GetWorkersAsync();
+        ViewData["Search"] = search;
+        var workers = await _workerService.GetWorkersAsync(search);
         return View(workers);
     }
 
