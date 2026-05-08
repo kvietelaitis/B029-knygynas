@@ -61,10 +61,10 @@ jobs:
           host: ${{ secrets.TS_SERVER_IP }}
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "publish/**"
+          source: "Knygynas/publish/**"
           target: ${{ secrets.SERVER_PATH }}
-          strip_components: 1
-
+          strip_components: 2
+          
       - name: Restart service
         uses: appleboy/ssh-action@v1.0.3
         with:
