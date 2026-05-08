@@ -54,7 +54,7 @@ jobs:
               
               rm -rf "$TARGET"
               mkdir -p "$TARGET"
-
+              
       - name: Copy files to server
         uses: appleboy/scp-action@v0.1.7
         with:
