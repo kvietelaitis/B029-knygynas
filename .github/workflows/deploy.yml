@@ -45,7 +45,15 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            rm -rf "${{ secrets.SERVER_PATH }}"/*
+              TARGET="${{ secrets.SERVER_PATH }}"
+              
+              if [ -z "$TARGET" ] || [ "$TARGET" = "/" ]; then
+                echo "Invalid target"
+                exit 1
+              fi
+              
+              rm -rf "$TARGET"
+              mkdir -p "$TARGET"
 
       - name: Copy files to server
         uses: appleboy/scp-action@v0.1.7
