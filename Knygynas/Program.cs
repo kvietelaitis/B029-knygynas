@@ -7,15 +7,52 @@ using Knygynas.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
+    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+// Configure Identity with reasonable security settings
+builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+{
+    // Relaxed password settings for university project
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequiredLength = 8;
+    
+    // Basic lockout protection
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+    options.Lockout.MaxFailedAccessAttempts = 10;
+    options.Lockout.AllowedForNewUsers = true;
+    
+    // User settings
+    options.User.RequireUniqueEmail = true;
+    options.SignIn.RequireConfirmedAccount = true;
+})
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
+
 builder.Services.AddControllersWithViews();
+
+// Add security headers for production
+builder.Services.AddHsts(options =>
+{
+    options.MaxAge = TimeSpan.FromDays(30);
+    options.IncludeSubDomains = true;
+});
+
+// Configure cookie policy
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.ExpireTimeSpan = TimeSpan.FromHours(8);
+    options.SlidingExpiration = true;
+});
 
 builder.Services.AddScoped<BookService>();
 builder.Services.AddScoped<IBookstoreService, BookstoreService>();
@@ -31,13 +68,23 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
-app.UseRouting();
 
+// Add basic security headers
+app.Use(async (context, next) =>
+{
+    context.Response.Headers.Append("X-Content-Type-Options", "nosniff");
+    context.Response.Headers.Append("X-Frame-Options", "SAMEORIGIN");
+    context.Response.Headers.Append("X-XSS-Protection", "1; mode=block");
+    
+    await next();
+});
+
+app.UseRouting();
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();
@@ -50,42 +97,69 @@ app.MapControllerRoute(
 app.MapRazorPages()
    .WithStaticAssets();
 
-// Seed Admin role and test users
+// Seed roles and test users for university project
 using (var scope = app.Services.CreateScope())
 {
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
     
-    // Seed roles
-    var roles = new[] { "Admin" };
-    foreach (var role in roles)
+    try
     {
-        if (!await roleManager.RoleExistsAsync(role))
+        // Seed roles
+        var roles = new[] { "Admin", "User" };
+        foreach (var role in roles)
         {
-            await roleManager.CreateAsync(new IdentityRole(role));
-        }
-    }
-
-    // Seed test users
-    var testUsers = new[]
-    {
-        new { Email = "admin@bookstore.com", Password = "Admin@123456", Role = "Admin" },
-        new { Email = "user@bookstore.com", Password = "User@123456", Role = "" }
-    };
-
-    foreach (var testUser in testUsers)
-    {
-        var user = await userManager.FindByEmailAsync(testUser.Email);
-        if (user == null)
-        {
-            user = new IdentityUser { UserName = testUser.Email, Email = testUser.Email, EmailConfirmed = true };
-            await userManager.CreateAsync(user, testUser.Password);
-            
-            if (!string.IsNullOrEmpty(testUser.Role))
+            if (!await roleManager.RoleExistsAsync(role))
             {
-                await userManager.AddToRoleAsync(user, testUser.Role);
+                await roleManager.CreateAsync(new IdentityRole(role));
+                logger.LogInformation("Created role: {Role}", role);
             }
         }
+
+        // Seed test users - OK for university project
+        var testUsers = new[]
+        {
+            new { Email = "admin@bookstore.com", Password = "Admin@123456", Role = "Admin" },
+            new { Email = "user@bookstore.com", Password = "User@123456", Role = "User" }
+        };
+
+        foreach (var testUser in testUsers)
+        {
+            var user = await userManager.FindByEmailAsync(testUser.Email);
+            if (user == null)
+            {
+                user = new IdentityUser 
+                { 
+                    UserName = testUser.Email, 
+                    Email = testUser.Email, 
+                    EmailConfirmed = true 
+                };
+                
+                var result = await userManager.CreateAsync(user, testUser.Password);
+                
+                if (result.Succeeded)
+                {
+                    if (!string.IsNullOrEmpty(testUser.Role))
+                    {
+                        await userManager.AddToRoleAsync(user, testUser.Role);
+                    }
+                    logger.LogInformation("Created test user: {Email} with role: {Role}", 
+                        testUser.Email, testUser.Role);
+                }
+                else
+                {
+                    logger.LogWarning("Failed to create user {Email}: {Errors}", 
+                        testUser.Email, string.Join(", ", result.Errors.Select(e => e.Description)));
+                }
+            }
+        }
+        
+        logger.LogInformation("Database seeding completed successfully");
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "An error occurred while seeding the database");
     }
 }
 
