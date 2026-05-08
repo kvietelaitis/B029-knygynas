@@ -38,14 +38,32 @@ jobs:
           tags: tag:ci
           version: latest
 
+      - name: Clean target
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.TS_SERVER_IP }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+              TARGET="${{ secrets.SERVER_PATH }}"
+              
+              if [ -z "$TARGET" ] || [ "$TARGET" = "/" ]; then
+                echo "Invalid target"
+                exit 1
+              fi
+              
+              rm -rf "$TARGET"
+              mkdir -p "$TARGET"
+
       - name: Copy files to server
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.TS_SERVER_IP }}
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "Knygynas/publish/**"
+          source: "publish/**"
           target: ${{ secrets.SERVER_PATH }}
+          strip_components: 1
 
       - name: Restart service
         uses: appleboy/ssh-action@v1.0.3
