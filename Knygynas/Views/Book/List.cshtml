@@ -83,9 +83,26 @@
                 <td>
                     <a asp-action="Details" asp-route-id="@book.ISBN"
                        class="btn btn-sm btn-info">Details</a>
+                    <button class="btn btn-sm btn-primary add-to-cart" data-isbn="@book.ISBN">Add to Cart</button>
                 </td>
             </tr>
         }
         </tbody>
     </table>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('.add-to-cart').on('click', function () {
+                var isbn = $(this).data('isbn');
+                $.post('/Cart/AddToCart', { isbn: isbn }, function (data) {
+                    if (data.success) {
+                        $('#cartModalMessage').text('"' + data.title + '" has been added to your cart.');
+                        $('#cartModal').modal('show');
+                    }
+                });
+            });
+        });
+    </script>
+}

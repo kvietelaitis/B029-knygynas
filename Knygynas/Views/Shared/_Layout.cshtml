@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -31,6 +31,9 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home"
                                asp-action="Privacy">Privacy</a>
                         </li>
+                        <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Book" asp-action="List">Books</a>
+                            </li>
                         @if (User.IsInRole("Admin"))
                         {
                             <li class="nav-item">
@@ -39,10 +42,11 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-controller="Worker" asp-action="Index">Workers</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Book" asp-action="List">Books</a>
-                            </li>
+                            
                         }
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="Cart" asp-action="Index">Cart</a>
+                        </li>
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>
@@ -61,6 +65,8 @@
         </div>
     </footer>
     <partial name="_DeleteModal" />
+    <partial name="_CartModal" />
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
