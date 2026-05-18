@@ -4,6 +4,21 @@
 }
 
 <div class="container mt-4">
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
     <h2>Your Shopping Cart</h2>
 
     @if (Model.Items.Count == 0)
@@ -57,7 +72,14 @@
 
         <div class="d-flex justify-content-between">
             <a asp-controller="Book" asp-action="List" class="btn btn-secondary">Continue Shopping</a>
-            <button class="btn btn-primary">Checkout</button>
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <a asp-action="Checkout" class="btn btn-primary">Checkout</a>
+            }
+            else
+            {
+                <a asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="/Cart/Checkout" class="btn btn-primary">Login to Checkout</a>
+            }
         </div>
     }
 </div>

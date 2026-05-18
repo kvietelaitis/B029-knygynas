@@ -1,0 +1,140 @@
+@model IEnumerable<Knygynas.Models.Order>
+@{
+    ViewData["Title"] = "Order Queue";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Order Fulfillment Queue</h2>
+        <span class="badge bg-dark p-2">Total Orders: @Model.Count()</span>
+    </div>
+
+    <!-- Quick Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card bg-warning text-dark border-0 shadow-sm">
+                <div class="card-body py-3 px-4 d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title mb-1 text-uppercase text-muted" style="font-size: 0.8rem;">Processing</h6>
+                        <h3 class="font-weight-bold mb-0">@Model.Count(o => o.State == Knygynas.Models.OrderState.Processing)</h3>
+                    </div>
+                    <i class="bi bi-clock-history fs-1"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-info text-white border-0 shadow-sm">
+                <div class="card-body py-3 px-4 d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title mb-1 text-uppercase" style="font-size: 0.8rem; opacity: 0.8;">Shipped</h6>
+                        <h3 class="font-weight-bold mb-0">@Model.Count(o => o.State == Knygynas.Models.OrderState.Shipped)</h3>
+                    </div>
+                    <i class="bi bi-truck fs-1"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-success text-white border-0 shadow-sm">
+                <div class="card-body py-3 px-4 d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title mb-1 text-uppercase" style="font-size: 0.8rem; opacity: 0.8;">Finished</h6>
+                        <h3 class="font-weight-bold mb-0">@Model.Count(o => o.State == Knygynas.Models.OrderState.Finished)</h3>
+                    </div>
+                    <i class="bi bi-check2-circle fs-1"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-danger text-white border-0 shadow-sm">
+                <div class="card-body py-3 px-4 d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title mb-1 text-uppercase" style="font-size: 0.8rem; opacity: 0.8;">Cancelled</h6>
+                        <h3 class="font-weight-bold mb-0">@Model.Count(o => o.State == Knygynas.Models.OrderState.Cancelled)</h3>
+                    </div>
+                    <i class="bi bi-x-circle fs-1"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Orders Table -->
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th class="px-4 py-3">Order ID</th>
+                        <th class="py-3">Date</th>
+                        <th class="py-3">Customer</th>
+                        <th class="py-3 text-end">Total Price</th>
+                        <th class="py-3 text-center">Delivery Method</th>
+                        <th class="py-3 text-center">Status</th>
+                        <th class="px-4 py-3 text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="7" class="text-center py-5 text-muted">
+                                <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                                No orders have been placed yet.
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var order in Model)
+                        {
+                            <tr>
+                                <td class="px-4 font-weight-bold">#@order.Id</td>
+                                <td>@order.OrderDate.ToString("yyyy-MM-dd HH:mm")</td>
+                                <td>@(string.IsNullOrEmpty(order.UserId) ? "Guest" : order.UserId)</td>
+                                <td class="text-end font-weight-bold text-primary">$@order.TotalPrice.ToString("F2")</td>
+                                <td class="text-center">
+                                    <span class="badge bg-secondary p-2">@order.DeliveryMethod</span>
+                                </td>
+                                <td class="text-center">
+                                    @switch (order.State)
+                                    {
+                                        case Knygynas.Models.OrderState.PendingPayment:
+                                            <span class="badge bg-secondary px-3 py-2">Pending Payment</span>
+                                            break;
+                                        case Knygynas.Models.OrderState.Processing:
+                                            <span class="badge bg-warning text-dark px-3 py-2">Processing</span>
+                                            break;
+                                        case Knygynas.Models.OrderState.Prepared:
+                                            <span class="badge bg-info text-dark px-3 py-2">Prepared</span>
+                                            break;
+                                        case Knygynas.Models.OrderState.Shipped:
+                                            <span class="badge bg-primary px-3 py-2">Shipped</span>
+                                            break;
+                                        case Knygynas.Models.OrderState.Finished:
+                                            <span class="badge bg-success px-3 py-2">Finished</span>
+                                            break;
+                                        case Knygynas.Models.OrderState.Returning:
+                                            <span class="badge bg-warning text-dark px-3 py-2">Returning</span>
+                                            break;
+                                        case Knygynas.Models.OrderState.Returned:
+                                            <span class="badge bg-dark px-3 py-2">Returned</span>
+                                            break;
+                                        case Knygynas.Models.OrderState.Cancelled:
+                                            <span class="badge bg-danger px-3 py-2">Cancelled</span>
+                                            break;
+                                    }
+                                </td>
+                                <td class="px-4 text-end">
+                                    <a asp-action="Details" asp-route-id="@order.Id" class="btn btn-outline-primary btn-sm px-3">
+                                        <i class="bi bi-eye me-1"></i> Manage
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">

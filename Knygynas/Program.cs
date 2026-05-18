@@ -3,6 +3,27 @@ using Microsoft.EntityFrameworkCore;
 using Knygynas.Data;
 using Knygynas.Services.Book;
 using Knygynas.Services;
+using System.IO;
+
+// Load environment variables from .env file
+var envPath = Path.Combine(Directory.GetCurrentDirectory(), ".env");
+if (File.Exists(envPath))
+{
+    foreach (var line in File.ReadAllLines(envPath))
+    {
+        if (string.IsNullOrWhiteSpace(line) || line.TrimStart().StartsWith("#")) continue;
+        var parts = line.Split('=', 2, StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length == 2)
+        {
+            var key = parts[0].Trim();
+            var val = parts[1].Trim().Split('#')[0].Trim(); // Remove inline comments
+            Environment.SetEnvironmentVariable(key, val);
+        }
+    }
+}
+
+// Set Stripe global configuration
+Stripe.StripeConfiguration.ApiKey = Environment.GetEnvironmentVariable("STRIPE_SECRET_KEY");
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -65,6 +86,8 @@ builder.Services.ConfigureApplicationCookie(options =>
 builder.Services.AddScoped<BookService>();
 builder.Services.AddScoped<IBookstoreService, BookstoreService>();
 builder.Services.AddScoped<WorkerService>();
+builder.Services.AddScoped<Knygynas.Services.EmailService>();
+builder.Services.AddHostedService<Knygynas.Services.DeliverySimulationService>();
 
 var app = builder.Build();
 
