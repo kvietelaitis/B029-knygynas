@@ -63,6 +63,7 @@
             <th>Page count</th>
             <th>Genre</th>
             <th>Price</th>
+            <th>Stock</th>
             <th>Actions</th>
         </tr>
         </thead>
@@ -81,9 +82,26 @@
                 </td>
                 <td>$@book.Price.ToString("F2")</td>
                 <td>
+                    @if (book.Available)
+                    {
+                        <span class="badge bg-success">@book.Quantity left</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger">Out of stock</span>
+                    }
+                </td>
+                <td>
                     <a asp-action="Details" asp-route-id="@book.ISBN"
-                       class="btn btn-sm btn-info">Details</a>
-                    <button class="btn btn-sm btn-primary add-to-cart" data-isbn="@book.ISBN">Add to Cart</button>
+                       class="btn btn-sm btn-info text-white">Details</a>
+                    @if (book.Available)
+                    {
+                        <button class="btn btn-sm btn-primary add-to-cart" data-isbn="@book.ISBN">Add to Cart</button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-sm btn-secondary" disabled>Out of Stock</button>
+                    }
                 </td>
             </tr>
         }

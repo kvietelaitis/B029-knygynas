@@ -3,6 +3,7 @@ using System;
 using Knygynas.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Knygynas.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260518145438_AddPostomatAndSeedData")]
+    partial class AddPostomatAndSeedData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.5");
@@ -40,22 +43,19 @@ namespace Knygynas.Migrations
                         {
                             Id = 1,
                             Biography = "English novelist and essayist.",
-                            Name = "George Orwell",
-                            
+                            Name = "George Orwell"
                         },
                         new
                         {
                             Id = 2,
                             Biography = "American novelist.",
-                            Name = "Harper Lee",
-                            
+                            Name = "Harper Lee"
                         },
                         new
                         {
                             Id = 3,
                             Biography = "American science fiction author.",
-                            Name = "Frank Herbert",
-                            
+                            Name = "Frank Herbert"
                         });
                 });
 
@@ -103,6 +103,9 @@ namespace Knygynas.Migrations
                     b.Property<string>("ISBN")
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("Available")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("DiscountId")
                         .HasColumnType("INTEGER");
 
@@ -127,9 +130,6 @@ namespace Knygynas.Migrations
                         .HasColumnType("REAL");
 
                     b.Property<int?>("PublisherId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Quantity")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("ReleaseDate")
@@ -157,6 +157,7 @@ namespace Knygynas.Migrations
                         new
                         {
                             ISBN = "978-0-14-028329-3",
+                            Available = true,
                             DiscountId = 1,
                             EANCode = "9780140283293",
                             Height = 2.0,
@@ -164,7 +165,6 @@ namespace Knygynas.Migrations
                             Length = 19.8f,
                             PageCount = 328,
                             Price = 12.99,
-                            Quantity = 10,
                             ReleaseDate = new DateTime(1949, 6, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Title = "1984",
                             Weight = 0.23999999999999999,
@@ -173,6 +173,7 @@ namespace Knygynas.Migrations
                         new
                         {
                             ISBN = "978-0-06-112008-4",
+                            Available = true,
                             DiscountId = 2,
                             EANCode = "9780061120084",
                             Height = 2.1000000000000001,
@@ -180,7 +181,6 @@ namespace Knygynas.Migrations
                             Length = 20.3f,
                             PageCount = 324,
                             Price = 14.99,
-                            Quantity = 10,
                             ReleaseDate = new DateTime(1960, 7, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Title = "To Kill a Mockingbird",
                             Weight = 0.26000000000000001,
@@ -189,6 +189,7 @@ namespace Knygynas.Migrations
                         new
                         {
                             ISBN = "978-0-7653-7793-1",
+                            Available = true,
                             DiscountId = 1,
                             EANCode = "9780765377937",
                             Height = 4.2000000000000002,
@@ -196,7 +197,6 @@ namespace Knygynas.Migrations
                             Length = 23.5f,
                             PageCount = 688,
                             Price = 18.989999999999998,
-                            Quantity = 10,
                             ReleaseDate = new DateTime(1965, 8, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Title = "Dune",
                             Weight = 0.68000000000000005,
@@ -407,83 +407,6 @@ namespace Knygynas.Migrations
                             EndDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             StartDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
-                });
-
-            modelBuilder.Entity("Knygynas.Models.Order", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("DeliveryMethod")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("FromAddress")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("FromCity")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("OrderDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("State")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("StripeSessionId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("ToAddress")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("ToCity")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<double>("TotalPrice")
-                        .HasColumnType("REAL");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Orders");
-                });
-
-            modelBuilder.Entity("Knygynas.Models.OrderItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("BookISBN")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("OrderId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<double>("Price")
-                        .HasColumnType("REAL");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BookISBN");
-
-                    b.HasIndex("OrderId");
-
-                    b.ToTable("OrderItems");
                 });
 
             modelBuilder.Entity("Knygynas.Models.Postomat", b =>
@@ -876,25 +799,6 @@ namespace Knygynas.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("Knygynas.Models.OrderItem", b =>
-                {
-                    b.HasOne("Knygynas.Models.Book", "Book")
-                        .WithMany()
-                        .HasForeignKey("BookISBN")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Knygynas.Models.Order", "Order")
-                        .WithMany("OrderItems")
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Book");
-
-                    b.Navigation("Order");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -961,11 +865,6 @@ namespace Knygynas.Migrations
             modelBuilder.Entity("Knygynas.Models.Discount", b =>
                 {
                     b.Navigation("Books");
-                });
-
-            modelBuilder.Entity("Knygynas.Models.Order", b =>
-                {
-                    b.Navigation("OrderItems");
                 });
 
             modelBuilder.Entity("Knygynas.Models.Publisher", b =>

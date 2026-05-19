@@ -3,6 +3,7 @@ using System;
 using Knygynas.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Knygynas.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260518190550_AddBookQuantity")]
+    partial class AddBookQuantity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.5");
@@ -40,22 +43,19 @@ namespace Knygynas.Migrations
                         {
                             Id = 1,
                             Biography = "English novelist and essayist.",
-                            Name = "George Orwell",
-                            
+                            Name = "George Orwell"
                         },
                         new
                         {
                             Id = 2,
                             Biography = "American novelist.",
-                            Name = "Harper Lee",
-                            
+                            Name = "Harper Lee"
                         },
                         new
                         {
                             Id = 3,
                             Biography = "American science fiction author.",
-                            Name = "Frank Herbert",
-                            
+                            Name = "Frank Herbert"
                         });
                 });
 
@@ -435,9 +435,6 @@ namespace Knygynas.Migrations
 
                     b.Property<int>("State")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("StripeSessionId")
-                        .HasColumnType("TEXT");
 
                     b.Property<string>("ToAddress")
                         .IsRequired()

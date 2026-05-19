@@ -8,7 +8,8 @@ public class Book
     public string ISBN { get; set; }
     
     public string Title { get; set; }
-    public bool Available { get; set; }
+    public int Quantity { get; set; }
+    public bool Available => Quantity > 0;
     public DateTime ReleaseDate { get; set; }
     public int PageCount { get; set; }
     public string Language { get; set; }
