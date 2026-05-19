@@ -40,19 +40,22 @@ namespace Knygynas.Migrations
                         {
                             Id = 1,
                             Biography = "English novelist and essayist.",
-                            Name = "George Orwell"
+                            Name = "George Orwell",
+                            
                         },
                         new
                         {
                             Id = 2,
                             Biography = "American novelist.",
-                            Name = "Harper Lee"
+                            Name = "Harper Lee",
+                            
                         },
                         new
                         {
                             Id = 3,
                             Biography = "American science fiction author.",
-                            Name = "Frank Herbert"
+                            Name = "Frank Herbert",
+                            
                         });
                 });
 

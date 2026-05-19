@@ -18,7 +18,7 @@
                         <h6 class="card-title mb-1 text-uppercase text-muted" style="font-size: 0.8rem;">Processing</h6>
                         <h3 class="font-weight-bold mb-0">@Model.Count(o => o.State == Knygynas.Models.OrderState.Processing)</h3>
                     </div>
-                    <i class="bi bi-clock-history fs-1"></i>
+                    
                 </div>
             </div>
         </div>
@@ -29,7 +29,7 @@
                         <h6 class="card-title mb-1 text-uppercase" style="font-size: 0.8rem; opacity: 0.8;">Shipped</h6>
                         <h3 class="font-weight-bold mb-0">@Model.Count(o => o.State == Knygynas.Models.OrderState.Shipped)</h3>
                     </div>
-                    <i class="bi bi-truck fs-1"></i>
+                    
                 </div>
             </div>
         </div>
@@ -40,7 +40,7 @@
                         <h6 class="card-title mb-1 text-uppercase" style="font-size: 0.8rem; opacity: 0.8;">Finished</h6>
                         <h3 class="font-weight-bold mb-0">@Model.Count(o => o.State == Knygynas.Models.OrderState.Finished)</h3>
                     </div>
-                    <i class="bi bi-check2-circle fs-1"></i>
+                    
                 </div>
             </div>
         </div>
@@ -51,7 +51,7 @@
                         <h6 class="card-title mb-1 text-uppercase" style="font-size: 0.8rem; opacity: 0.8;">Cancelled</h6>
                         <h3 class="font-weight-bold mb-0">@Model.Count(o => o.State == Knygynas.Models.OrderState.Cancelled)</h3>
                     </div>
-                    <i class="bi bi-x-circle fs-1"></i>
+                    
                 </div>
             </div>
         </div>

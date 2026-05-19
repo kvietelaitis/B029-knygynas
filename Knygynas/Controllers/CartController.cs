@@ -108,6 +108,12 @@ public class CartController : Controller
             TempData["ErrorMessage"] = "Please provide your phone number for delivery confirmation.";
             return RedirectToAction(nameof(Checkout));
         }
+        if (phoneNumber.Length != 12)
+        {
+            TempData["ErrorMessage"] = "Please provide a valid phone number (12 digits).";
+            return RedirectToAction(nameof(Checkout));
+        }
+        
 
         // Verify all books in the cart are available and in stock
         foreach (var item in cart.Items)

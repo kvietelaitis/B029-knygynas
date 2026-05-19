@@ -152,8 +152,8 @@ using (var scope = app.Services.CreateScope())
         // Seed test users - OK for university project
         var testUsers = new[]
         {
-            new { Email = "admin@bookstore.com", Password = "Admin@123456", Role = "Admin" },
-            new { Email = "user@bookstore.com", Password = "User@123456", Role = "User" }
+            new { Email = "admin@bookstore.com", Password = "admin123", Role = "Admin" },
+            new { Email = "user@bookstore.com", Password = "user123", Role = "User" }
         };
 
         foreach (var testUser in testUsers)
