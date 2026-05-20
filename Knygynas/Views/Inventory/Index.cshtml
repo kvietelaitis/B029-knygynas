@@ -1,0 +1,91 @@
+@model IEnumerable<Knygynas.Models.Book>
+@{
+    ViewData["Title"] = "Inventory";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">Inventory Management</h2>
+        <small class="text-muted">Update stock levels for the storefront</small>
+    </div>
+
+    <div class="table-responsive shadow-sm card">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>ISBN</th>
+                    <th>Title</th>
+                    <th>Authors</th>
+                    <th class="text-end">Price</th>
+                    <th class="text-center">Stock</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var book in Model)
+                {
+                    <tr id="row-@book.ISBN">
+                        <td>@book.ISBN</td>
+                        <td class="font-weight-bold">@book.Title</td>
+                        <td>@string.Join(", ", book.AuthorRoles.Select(ar => ar.Author.Name))</td>
+                        <td class="text-end">$@book.Price.ToString("F2")</td>
+                        <td class="text-center">
+                            <input type="number" class="form-control form-control-sm text-center" value="@book.Quantity" min="0" id="qty-@book.ISBN" style="width: 90px; margin: auto;" />
+                        </td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-primary update-stock" data-isbn="@book.ISBN">Update</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.update-stock').forEach(function (btn) {
+                btn.addEventListener('click', async function () {
+                    var isbn = btn.getAttribute('data-isbn');
+                    var input = document.getElementById('qty-' + isbn);
+                    var qty = parseInt(input.value || '0');
+
+                    if (isNaN(qty) || qty < 0) {
+                        alert('Quantity must be a number >= 0');
+                        return;
+                    }
+
+                    var token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+                    try {
+                        const res = await fetch('@Url.Action("UpdateStock")', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+                            body: `isbn=${encodeURIComponent(isbn)}&quantity=${qty}&__RequestVerificationToken=${encodeURIComponent(token)}`
+                        });
+
+                        if (!res.ok) {
+                            const txt = await res.text();
+                            alert('Update failed: ' + txt);
+                            return;
+                        }
+
+                        const json = await res.json();
+                        if (json.success) {
+                            // simple feedback
+                            btn.innerText = 'Saved';
+                            setTimeout(() => btn.innerText = 'Update', 1500);
+                        } else {
+                            alert('Update failed');
+                        }
+                    } catch (e) {
+                        alert('Network error: ' + e.message);
+                    }
+                });
+            });
+        });
+    </script>
+}
+
+

@@ -33,12 +33,15 @@ public class DeliverySimulationService : BackgroundService
                     var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
                     var emailService = scope.ServiceProvider.GetRequiredService<EmailService>();
 
-                    // Fetch active orders (not finished, returned, or cancelled)
+                    // Fetch active orders that have already been paid for.
+                    // PendingPayment orders must stay untouched so Stripe completion can
+                    // finalize inventory and clear the cart before delivery simulation runs.
                     var activeOrders = await context.Orders
                         .Include(o => o.OrderItems)
                         .Where(o => o.State != OrderState.Finished 
                                  && o.State != OrderState.Returned 
-                                 && o.State != OrderState.Cancelled)
+                                 && o.State != OrderState.Cancelled
+                                 && o.State != OrderState.PendingPayment)
                         .ToListAsync(stoppingToken);
 
                     if (activeOrders.Any())

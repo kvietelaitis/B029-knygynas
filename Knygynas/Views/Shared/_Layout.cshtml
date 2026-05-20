@@ -8,53 +8,57 @@
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Knygynas.styles.css" asp-append-version="true" />
 </head>
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Bookstore</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
-                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom mb-3">
+            <div class="container d-flex align-items-center">
+                <a class="navbar-brand me-4" asp-area="" asp-controller="Home" asp-action="Index">Knygynas</a>
+
+                <form class="d-none d-md-flex flex-fill me-3" asp-controller="Book" asp-action="List" method="get">
+                    <div class="input-group">
+                        <input name="Title" type="search" class="form-control form-control-sm" placeholder="Search books, authors, ISBN" aria-label="Search">
+                        <button class="btn btn-outline-secondary btn-sm" type="submit">Search</button>
+                    </div>
+                </form>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+
+                <div class="collapse navbar-collapse" id="mainNav">
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link" asp-controller="Book" asp-action="List">Books</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home"
-                               asp-action="Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Book" asp-action="List">Books</a>
+                        @if (User.IsInRole("Admin") || User.IsInRole("Worker"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Inventory" asp-action="Index">Inventory</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Order" asp-action="Index">Orders</a>
+                            </li>
+                        }
                         @if (User.IsInRole("Admin"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Bookstore" asp-action="Index">Bookstores</a>
+                                <a class="nav-link" asp-controller="Worker" asp-action="Index">Workers</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Worker" asp-action="Index">Workers</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Order" asp-action="Index">Orders</a>
-                            </li>
-                            
                         }
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Cart" asp-action="Index">Cart</a>
+                            <a class="nav-link" asp-controller="Cart" asp-action="Index">Cart</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Cart" asp-action="MyOrders">My Orders</a>
+                            <a class="nav-link" asp-controller="Cart" asp-action="MyOrders">My Orders</a>
+                        </li>
+                        <li class="nav-item ms-2">
+                            <partial name="_LoginPartial" />
                         </li>
                     </ul>
-                    <partial name="_LoginPartial" />
                 </div>
             </div>
         </nav>
