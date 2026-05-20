@@ -129,7 +129,6 @@ app.MapControllerRoute(
 app.MapRazorPages()
    .WithStaticAssets();
 
-// Seed roles and test users for university project
 using (var scope = app.Services.CreateScope())
 {
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
@@ -148,12 +147,11 @@ using (var scope = app.Services.CreateScope())
                 logger.LogInformation("Created role: {Role}", role);
             }
         }
-
-        // Seed test users - OK for university project
+        
         var testUsers = new[]
         {
-            new { Email = "admin@bookstore.com", Password = "admin123", Role = "Admin" },
-            new { Email = "user@bookstore.com", Password = "user123", Role = "User" }
+            new { Email = "admin@bookstore.com", Password = "Admin@123456", Role = "Admin" },
+            new { Email = "user@bookstore.com", Password = "User@123456", Role = "User" }
         };
 
         foreach (var testUser in testUsers)

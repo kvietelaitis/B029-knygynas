@@ -30,8 +30,9 @@ $(function () {
 				return;
 			}
 
-			$('#workerModalContent').html(result);
-			var formAfter = $('#workerModalContent').find('form');
+			var modalContent = $('#workerModalContent');
+			modalContent.html(result);
+			var formAfter = modalContent.find('form');
 			if ($.validator && $.validator.unobtrusive) {
 				$.validator.unobtrusive.parse(formAfter);
 			}
@@ -50,5 +51,19 @@ $(function () {
 		modal.find('#deleteModalId').val(id);
 		modal.find('#deleteModalLabel').text(title);
 		modal.find('#deleteModalMessage').text(message);
+	});
+
+	$(document).on('click', '.add-to-cart', function () {
+		var isbn = $(this).data('isbn');
+		if (!isbn) {
+			return;
+		}
+
+		$.post('/Cart/AddToCart', { isbn: isbn }, function (data) {
+			if (data && data.success) {
+				$('#cartModalMessage').text('"' + data.title + '" has been added to your cart.');
+				$('#cartModal').modal('show');
+			}
+		});
 	});
 });

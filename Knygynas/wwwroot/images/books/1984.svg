@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" role="img" aria-labelledby="title desc">
+  <title>1984 cover</title>
+  <desc>Stylized book cover for 1984</desc>
+  <defs>
+	<linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+	  <stop offset="0%" stop-color="#2a3a4a"/>
+	  <stop offset="55%" stop-color="#5d6f82"/>
+	  <stop offset="100%" stop-color="#d8c8b6"/>
+	</linearGradient>
+  </defs>
+  <rect width="600" height="800" rx="36" fill="url(#g)"/>
+  <rect x="64" y="64" width="472" height="672" rx="28" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.22)"/>
+  <text x="90" y="160" fill="#f5efe8" font-family="Georgia, serif" font-size="34" letter-spacing="6">GEORGE ORWELL</text>
+  <text x="90" y="320" fill="#ffffff" font-family="Georgia, serif" font-size="120" font-weight="700">1984</text>
+  <text x="90" y="390" fill="#f0e6da" font-family="Arial, sans-serif" font-size="28" letter-spacing="4">A DYSTOPIAN CLASSIC</text>
+  <rect x="90" y="440" width="220" height="8" rx="4" fill="#f5efe8" opacity="0.85"/>
+  <text x="90" y="540" fill="#fff" font-family="Arial, sans-serif" font-size="24" opacity="0.9">A timeless vision of control, truth,</text>
+  <text x="90" y="574" fill="#fff" font-family="Arial, sans-serif" font-size="24" opacity="0.9">and resistance.</text>
+</svg>
+
