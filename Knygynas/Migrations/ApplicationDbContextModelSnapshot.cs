@@ -110,6 +110,9 @@ namespace Knygynas.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("CoverImageUrl")
+                        .HasColumnType("TEXT");
+
                     b.Property<double?>("Height")
                         .HasColumnType("REAL");
 
@@ -159,6 +162,7 @@ namespace Knygynas.Migrations
                             ISBN = "978-0-14-028329-3",
                             DiscountId = 1,
                             EANCode = "9780140283293",
+                            CoverImageUrl = "/images/books/1984.svg",
                             Height = 2.0,
                             Language = "English",
                             Length = 19.8f,
@@ -175,6 +179,7 @@ namespace Knygynas.Migrations
                             ISBN = "978-0-06-112008-4",
                             DiscountId = 2,
                             EANCode = "9780061120084",
+                            CoverImageUrl = "/images/books/to-kill-a-mockingbird.svg",
                             Height = 2.1000000000000001,
                             Language = "English",
                             Length = 20.3f,
@@ -191,6 +196,7 @@ namespace Knygynas.Migrations
                             ISBN = "978-0-7653-7793-1",
                             DiscountId = 1,
                             EANCode = "9780765377937",
+                            CoverImageUrl = "/images/books/dune.svg",
                             Height = 4.2000000000000002,
                             Language = "English",
                             Length = 23.5f,
