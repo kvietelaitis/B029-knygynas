@@ -6,7 +6,7 @@ using Knygynas.Models;
 
 namespace Knygynas.Controllers.Admin;
 
-[Authorize(Roles = "Admin")]
+[Authorize(Roles = "Admin,Worker")]
 public class OrderController : Controller
 {
     private readonly ApplicationDbContext _context;
@@ -49,6 +49,7 @@ public class OrderController : Controller
 
     // POST: Order/UpdateStatus
     [HttpPost]
+    [Authorize(Roles = "Admin,Worker")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> UpdateStatus(int id, OrderState state)
     {

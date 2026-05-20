@@ -1,168 +1,126 @@
 @model IEnumerable<Knygynas.Models.Book>
 @{
-    ViewData["Title"] = "Book Catalog";
-
-    var books = Model.ToList();
-    var totalBooks = books.Count;
-    var availableBooks = books.Count(b => b.Available);
-    var outOfStockBooks = totalBooks - availableBooks;
+    ViewData["Title"] = "List";
 }
 
-<div class="container storefront-page">
-    <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
-        <div>
-            <div class="storefront-kicker mb-2">Bookstore catalog</div>
-            <h1 class="storefront-section-title display-6 mb-2">All books</h1>
-            <p class="text-muted mb-0">A clean storefront view of the full collection.</p>
-        </div>
-        <div class="d-flex gap-2 flex-wrap">
-            <span class="badge rounded-pill text-bg-dark px-3 py-2">@totalBooks titles</span>
-            <span class="badge rounded-pill text-bg-success px-3 py-2">@availableBooks in stock</span>
-            <span class="badge rounded-pill text-bg-danger px-3 py-2">@outOfStockBooks sold out</span>
-        </div>
-    </div>
-
-    <div id="catalog-filters" class="card storefront-panel storefront-filters mb-4">
-        <div class="card-body p-4 p-lg-5">
-            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
-                <div>
-                    <h2 class="storefront-section-title h4 mb-1">Find your next read</h2>
-                    <p class="mb-0 text-muted">Filter the shelves by title, author, or publication year.</p>
-                </div>
-                <span class="badge text-bg-secondary rounded-pill px-3 py-2">@totalBooks results</span>
-            </div>
-
-            <form asp-action="List" method="get" class="row g-3 align-items-end">
-                <div class="col-md-6 col-lg-3">
-                    <label class="filter-label form-label" for="Title">Title</label>
-                    <input id="Title" name="Title" value="@Context.Request.Query["Title"]" class="form-control form-control-lg" placeholder="Search by title" />
-                </div>
-
-                <div class="col-md-6 col-lg-3">
-                    <label class="filter-label form-label" for="AuthorName">Author</label>
-                    <input id="AuthorName" name="AuthorName" value="@Context.Request.Query["AuthorName"]" class="form-control form-control-lg" placeholder="Search by author" />
-                </div>
-
-                <div class="col-md-6 col-lg-2">
-                    <label class="filter-label form-label" for="YearFrom">Year from</label>
-                    <input id="YearFrom" name="YearFrom" value="@Context.Request.Query["YearFrom"]" class="form-control form-control-lg" placeholder="2018" />
-                </div>
-
-                <div class="col-md-6 col-lg-2">
-                    <label class="filter-label form-label" for="YearTo">Year to</label>
-                    <input id="YearTo" name="YearTo" value="@Context.Request.Query["YearTo"]" class="form-control form-control-lg" placeholder="2026" />
-                </div>
-
-                <div class="col-lg-2 d-grid gap-2">
-                    <button type="submit" class="btn btn-dark btn-lg">Search</button>
-                    <a asp-action="List" class="btn btn-outline-secondary">Clear</a>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <div>
-            <h2 class="storefront-section-title h4 mb-1">Featured books</h2>
-            <p class="mb-0 text-muted">A storefront-style view of the full catalog.</p>
-        </div>
-        <span class="badge rounded-pill text-bg-dark px-3 py-2">@totalBooks books</span>
-    </div>
-
-    @if (!books.Any())
-    {
-        <div class="empty-state text-center">
-            <h3 class="h4 fw-bold mb-2">No books match your search</h3>
-            <p class="text-muted mb-3">Try loosening the filters to browse the full shelf again.</p>
-            <a asp-action="List" class="btn btn-dark btn-lg px-4">Reset filters</a>
-        </div>
+<style>
+    .filters {
+        display: grid;
+        grid-template-columns: repeat(4, max-content) max-content;
+        gap: .75rem 1rem; /* row/col gap */
+        align-items: end; /* align inputs + submit */
+        padding-bottom: 1rem;
     }
-    else
-    {
-        <div class="row g-4">
-            @foreach (var book in books)
-            {
-                var authors = string.Join(", ", book.AuthorRoles.Select(ar => ar.Author.Name));
-                var categories = string.Join(", ", book.BookCategories.Select(bc => bc.Category.Name));
 
-                <div class="col-sm-6 col-lg-4">
-                    <div class="card book-card h-100">
-                        <div class="book-cover-media">
-                            @if (!string.IsNullOrWhiteSpace(book.CoverImageUrl))
-                            {
-                                <img src="@book.CoverImageUrl" alt="@book.Title cover" class="book-cover-image" loading="lazy" />
-                            }
-                            else
-                            {
-                                <div class="book-cover-fallback">
-                                    <span class="book-cover-fallback-kicker">Bookstore pick</span>
-                                    <span class="book-cover-fallback-title">@book.Title</span>
-                                </div>
-                            }
-                        </div>
-                        <div class="card-body d-flex flex-column p-4">
-                            <div class="d-flex justify-content-between align-items-start gap-3 mb-2">
-                                <div>
-                                    <h3 class="h5 fw-bold mb-1">@book.Title</h3>
-                                    <p class="book-meta mb-0">@(!string.IsNullOrWhiteSpace(authors) ? authors : "Various authors")</p>
-                                </div>
-                                <span class="badge rounded-pill text-bg-light border text-dark">@book.ReleaseDate.Year</span>
-                            </div>
-
-                            <div class="d-flex flex-wrap gap-2 mb-3">
-                                @if (!string.IsNullOrWhiteSpace(categories))
-                                {
-                                    @foreach (var category in categories.Split(", "))
-                                    {
-                                        <span class="badge rounded-pill text-bg-light border text-dark">@category</span>
-                                    }
-                                }
-                                else
-                                {
-                                    <span class="badge rounded-pill text-bg-light border text-dark">General</span>
-                                }
-                            </div>
-
-                            <div class="book-meta mb-3">
-                                <div class="mb-1"><strong>Release date:</strong> @book.ReleaseDate.ToString("MMM d, yyyy")</div>
-                                <div class="mb-1"><strong>Pages:</strong> @book.PageCount</div>
-                                <div><strong>ISBN:</strong> @book.ISBN</div>
-                            </div>
-
-                            <div class="mt-auto">
-                                <div class="d-flex justify-content-between align-items-end mb-3">
-                                    <div>
-                                        <div class="text-muted small text-uppercase fw-semibold">Price</div>
-                                        <div class="book-price">$@book.Price.ToString("F2")</div>
-                                    </div>
-                                    <div class="text-end">
-                                        @if (book.Available)
-                                        {
-                                            <span class="badge text-bg-success px-3 py-2">@book.Quantity left</span>
-                                        }
-                                        else
-                                        {
-                                            <span class="badge text-bg-danger px-3 py-2">Out of stock</span>
-                                        }
-                                    </div>
-                                </div>
-
-                                <div class="d-flex gap-2">
-                                    <a asp-action="Details" asp-route-id="@book.ISBN" class="btn btn-outline-dark flex-grow-1">Details</a>
-                                    @if (book.Available)
-                                    {
-                                        <button class="btn btn-dark flex-grow-1 add-to-cart" data-isbn="@book.ISBN">Add to Cart</button>
-                                    }
-                                    else
-                                    {
-                                        <button class="btn btn-secondary flex-grow-1" disabled>Out of Stock</button>
-                                    }
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            }
-        </div>
+    .filters .field label {
+        display: block;       /* label above input */
+        margin-bottom: .25rem;
     }
+
+    .filters .field input {
+        width: 12rem;         /* adjust as you like */
+    }
+
+    .filters .actions input {
+        height: 2.1rem;       /* roughly aligns with input height */
+    }
+</style>
+
+<div class="container mt-4">
+    <h2>All Books</h2>
+    <form asp-action="List" method="get" class="filters">
+        <div class="field">
+            <label for="Title">Title:</label>
+            <input id="Title" name="Title" value="@Context.Request.Query["Title"]" />
+        </div>
+
+        <div class="field">
+            <label for="AuthorName">Author:</label>
+            <input id="AuthorName" name="AuthorName" value="@Context.Request.Query["AuthorName"]" />
+        </div>
+
+        <div class="field">
+            <label for="YearFrom">Year from:</label>
+            <input id="YearFrom" name="YearFrom" value="@Context.Request.Query["YearFrom"]" />
+        </div>
+
+        <div class="field">
+            <label for="YearTo">Year to:</label>
+            <input id="YearTo" name="YearTo" value="@Context.Request.Query["YearTo"]" />
+        </div>
+
+        <div class="actions">
+            <input id="submitFilters" type="submit" value="Search" />
+        </div>
+    </form>
+
+    <table class="table table-striped table-hover">
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Release Date</th>
+            <th>Page count</th>
+            <th>Genre</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var book in Model)
+        {
+            <tr>
+                <td>@book.Title</td>
+                <td>
+                    @string.Join(", ", book.AuthorRoles.Select(ar => ar.Author.Name))
+                </td>
+                <td>@book.ReleaseDate.ToShortDateString()</td>
+                <td>@book.PageCount</td>
+                <td>
+                    @string.Join(", ", book.BookCategories.Select(bc => bc.Category.Name))
+                </td>
+                <td>$@book.Price.ToString("F2")</td>
+                <td>
+                    @if (book.Available)
+                    {
+                        <span class="badge bg-success">@book.Quantity left</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger">Out of stock</span>
+                    }
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@book.ISBN"
+                       class="btn btn-sm btn-info text-white">Details</a>
+                    @if (book.Available)
+                    {
+                        <button class="btn btn-sm btn-primary add-to-cart" data-isbn="@book.ISBN">Add to Cart</button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-sm btn-secondary" disabled>Out of Stock</button>
+                    }
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('.add-to-cart').on('click', function () {
+                var isbn = $(this).data('isbn');
+                $.post('/Cart/AddToCart', { isbn: isbn }, function (data) {
+                    if (data.success) {
+                        $('#cartModalMessage').text('"' + data.title + '" has been added to your cart.');
+                        $('#cartModal').modal('show');
+                    }
+                });
+            });
+        });
+    </script>
+}

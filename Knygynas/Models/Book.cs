@@ -14,7 +14,6 @@ public class Book
     public int PageCount { get; set; }
     public string Language { get; set; }
     public string EANCode { get; set; }
-    public string? CoverImageUrl { get; set; }
     public float? Length { get; set; }
     public double? Width { get; set; }
     public double? Height { get; set; }
