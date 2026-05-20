@@ -1,8 +1,70 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Bookstore Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container storefront-page">
+    <div class="storefront-hero p-4 p-lg-5 mb-4">
+        <div class="hero-content row align-items-center g-4">
+            <div class="col-lg-8">
+                <div class="storefront-kicker mb-3">Independent bookstore • curated shelves</div>
+                <h1 class="display-5 fw-bold mb-3">A simple online bookstore that feels calm, warm, and easy to browse.</h1>
+                <p class="lead mb-4" style="max-width: 40rem;">
+                    Discover the catalog, view covers at a glance, and jump straight into shopping.
+                </p>
+                <div class="d-flex flex-wrap gap-2">
+                    <a asp-controller="Book" asp-action="List" class="btn btn-light btn-lg px-4">Browse books</a>
+                    <a asp-controller="Cart" asp-action="Index" class="btn btn-outline-light btn-lg px-4">View cart</a>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-lg rounded-4 bg-white text-dark">
+                    <div class="card-body p-4">
+                        <div class="badge text-bg-dark rounded-pill mb-3 px-3 py-2">Featured reading</div>
+                        <h2 class="h5 fw-bold mb-2">Browse like a real storefront</h2>
+                        <p class="text-muted mb-0">Clean layout, cover art, and quick actions without visual clutter.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card storefront-stat h-100 bg-white">
+                <div class="card-body p-4">
+                    <div class="text-uppercase text-muted small fw-semibold mb-1">Browse</div>
+                    <div class="fw-bold fs-5">Clean catalog cards</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card storefront-stat h-100 bg-white">
+                <div class="card-body p-4">
+                    <div class="text-uppercase text-muted small fw-semibold mb-1">Discover</div>
+                    <div class="fw-bold fs-5">Cover art at a glance</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card storefront-stat h-100 bg-white">
+                <div class="card-body p-4">
+                    <div class="text-uppercase text-muted small fw-semibold mb-1">Shop</div>
+                    <div class="fw-bold fs-5">Quick add-to-cart flow</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card storefront-panel">
+        <div class="card-body p-4 p-lg-5 d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <div>
+                <h2 class="storefront-section-title h4 mb-1">Start shopping</h2>
+                <p class="mb-0 text-muted">Open the catalog to browse all books and add them to your cart.</p>
+            </div>
+            <div class="d-flex flex-wrap gap-2">
+                <a asp-controller="Book" asp-action="List" class="btn btn-dark btn-lg">Open catalog</a>
+                <a asp-controller="Home" asp-action="Privacy" class="btn btn-outline-secondary btn-lg">Store policies</a>
+            </div>
+        </div>
+    </div>
 </div>

@@ -1,0 +1,85 @@
+@model Knygynas.Models.Cart
+@{
+    ViewData["Title"] = "Shopping Cart";
+}
+
+<div class="container mt-4">
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <h2>Your Shopping Cart</h2>
+
+    @if (Model.Items.Count == 0)
+    {
+        <div class="alert alert-info">
+            Your cart is empty. <a asp-controller="Book" asp-action="List">Go shopping!</a>
+        </div>
+    }
+    else
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Book</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Items)
+                {
+                    <tr>
+                        <td>@item.Title</td>
+                        <td>$@item.Price.ToString("F2")</td>
+                        <td>
+                            <form asp-action="UpdateQuantity" method="post" class="d-inline-flex align-items-center">
+                                <input type="hidden" name="isbn" value="@item.ISBN" />
+                                <input type="number" name="quantity" value="@item.Quantity" min="1" class="form-control form-control-sm" style="width: 60px;" />
+                                <button type="submit" class="btn btn-sm btn-outline-secondary ms-2">Update</button>
+                            </form>
+                        </td>
+                        <td>$@item.Total.ToString("F2")</td>
+                        <td>
+                            <form asp-action="RemoveFromCart" method="post">
+                                <input type="hidden" name="isbn" value="@item.ISBN" />
+                                <button type="submit" class="btn btn-sm btn-danger">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3" class="text-end font-weight-bold">Total:</td>
+                    <td colspan="2" class="font-weight-bold">$@Model.TotalPrice.ToString("F2")</td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <div class="d-flex justify-content-between">
+            <a asp-controller="Book" asp-action="List" class="btn btn-secondary">Continue Shopping</a>
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <a asp-action="Checkout" class="btn btn-primary">Checkout</a>
+            }
+            else
+            {
+                <a asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="/Cart/Checkout" class="btn btn-primary">Login to Checkout</a>
+            }
+        </div>
+    }
+</div>

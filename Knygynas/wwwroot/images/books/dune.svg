@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" role="img" aria-labelledby="title desc">
+  <title>Dune cover</title>
+  <desc>Stylized book cover for Dune</desc>
+  <defs>
+    <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#45312a"/>
+      <stop offset="55%" stop-color="#8c6546"/>
+      <stop offset="100%" stop-color="#f0d89c"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="800" rx="36" fill="url(#g)"/>
+  <rect x="60" y="60" width="480" height="680" rx="28" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.22)"/>
+  <text x="90" y="150" fill="#fff8ec" font-family="Arial, sans-serif" font-size="28" letter-spacing="7">FRANK HERBERT</text>
+  <text x="90" y="305" fill="#ffffff" font-family="Georgia, serif" font-size="140" font-weight="700">DUNE</text>
+  <path d="M90 430 C160 380, 220 500, 300 450 S420 500, 520 420" fill="none" stroke="#fff8ec" stroke-width="6" opacity="0.8"/>
+  <path d="M90 470 C170 420, 240 540, 320 490 S430 560, 520 470" fill="none" stroke="#fff8ec" stroke-width="4" opacity="0.55"/>
+  <text x="90" y="580" fill="#fff8ec" font-family="Arial, sans-serif" font-size="24" letter-spacing="4">THE SCIENCE FICTION EPIC</text>
+  <text x="90" y="620" fill="#fff" font-family="Arial, sans-serif" font-size="22" opacity="0.9">Adventure, politics, and survival</text>
+  <text x="90" y="652" fill="#fff" font-family="Arial, sans-serif" font-size="22" opacity="0.9">on an unforgiving world.</text>
+</svg>
+
