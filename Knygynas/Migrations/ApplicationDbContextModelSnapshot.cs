@@ -850,8 +850,14 @@ namespace Knygynas.Migrations
                     b.HasOne("Knygynas.Models.Publisher", null)
                         .WithMany("Books")
                         .HasForeignKey("PublisherId");
+                    b.HasMany("Knygynas.Models.Review", "Reviews") 
+                        .WithOne("Book")                            
+                        .HasForeignKey("BookISBN")                 
+                        .OnDelete(DeleteBehavior.Cascade)          
+                        .IsRequired();
 
                     b.Navigation("Discount");
+                    b.Navigation("Reviews");
                 });
 
             modelBuilder.Entity("Knygynas.Models.BookCategory", b =>

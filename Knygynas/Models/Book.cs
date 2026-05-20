@@ -26,10 +26,12 @@ public class Book
     public ICollection<AuthorRole> AuthorRoles { get; set; }
     
     public ICollection<BookCategory> BookCategories { get; set; }
+    public ICollection<Review> Reviews { get; set; }
     
     public Book()
     {
         AuthorRoles = new List<AuthorRole>();
         BookCategories = new List<BookCategory>();
+        Reviews = new List<Review>();
     }
 }
