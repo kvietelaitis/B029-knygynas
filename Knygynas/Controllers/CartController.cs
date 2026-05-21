@@ -29,9 +29,9 @@ public class CartController : Controller
     }
 
     [HttpPost]
-    public IActionResult AddToCart(string isbn)
+    public async Task<IActionResult> AddToCart(string isbn)
     {
-        var book = _bookService.GetBook(isbn);
+        var book = await _bookService.GetBookAsync(isbn);
         if (book == null)
         {
             return NotFound();
@@ -78,7 +78,7 @@ public class CartController : Controller
         // Verify all books in the cart are available
         foreach (var item in cart.Items)
         {
-            var dbBook = _bookService.GetBook(item.ISBN);
+            var dbBook = await _bookService.GetBookAsync(item.ISBN);
             if (dbBook == null || !dbBook.Available)
             {
                 TempData["ErrorMessage"] = $"The book '{item.Title}' is no longer available for purchase.";
@@ -118,7 +118,7 @@ public class CartController : Controller
         // Verify all books in the cart are available and in stock
         foreach (var item in cart.Items)
         {
-            var dbBook = _bookService.GetBook(item.ISBN);
+            var dbBook = await _bookService.GetBookAsync(item.ISBN);
             if (dbBook == null || dbBook.Quantity < item.Quantity)
             {
                 TempData["ErrorMessage"] = $"The book '{item.Title}' is out of stock or does not have enough copies left.";
@@ -129,21 +129,21 @@ public class CartController : Controller
         string toCity = "";
         string toAddress = "";
 
-        if (deliveryMethod == "Postomat")
+        if (deliveryMethod == "Post Locker")
         {
             if (!selectedPostomatId.HasValue)
             {
-                TempData["ErrorMessage"] = "Please select a postomat locker.";
+                TempData["ErrorMessage"] = "Please select a post locker.";
                 return RedirectToAction(nameof(Checkout));
             }
             var postomat = await _context.Postomats.FindAsync(selectedPostomatId.Value);
             if (postomat == null)
             {
-                TempData["ErrorMessage"] = "Selected postomat was not found.";
+                TempData["ErrorMessage"] = "Selected post locker was not found.";
                 return RedirectToAction(nameof(Checkout));
             }
             toCity = postomat.City;
-            toAddress = postomat.Address + $" ({postomat.Company} Postomat)";
+            toAddress = postomat.Address + $" ({postomat.Company} Post Locker)";
         }
         else if (deliveryMethod == "Bookstore")
         {
@@ -203,12 +203,13 @@ public class CartController : Controller
 
         foreach (var item in cart.Items)
         {
+            var book = await _bookService.GetBookAsync(item.ISBN);
             order.OrderItems.Add(new OrderItem
             {
                 BookISBN = item.ISBN,
                 Price = item.Price,
                 Quantity = item.Quantity,
-                Book = _bookService.GetBook(item.ISBN)
+                Book = book
             });
         }
 
@@ -294,25 +295,17 @@ public class CartController : Controller
 
                 if (session != null && session.PaymentStatus == "paid")
                 {
-                    // Concurrency check: verify quantities before decrementing
-                    foreach (var item in order.OrderItems)
-                    {
-                        var book = await _context.Books.FindAsync(item.BookISBN);
-                        if (book == null || book.Quantity < item.Quantity)
-                        {
-                            order.State = OrderState.Cancelled;
-                            await _context.SaveChangesAsync();
+                    // Perform an atomic decrement for all order items via BookService
+                    var decrements = order.OrderItems.Select(oi => (oi.BookISBN, oi.Quantity)).ToList();
+                    var decremented = await _bookService.DecrementMultipleAsync(decrements);
 
-                            TempData["ErrorMessage"] = $"Unfortunately, '{item.Book?.Title ?? item.BookISBN}' went out of stock during your payment transaction. A refund has been issued.";
-                            return RedirectToAction(nameof(Index));
-                        }
-                    }
-
-                    // Decrement stock levels
-                    foreach (var item in order.OrderItems)
+                    if (!decremented)
                     {
-                        var book = await _context.Books.FindAsync(item.BookISBN);
-                        book.Quantity -= item.Quantity;
+                        order.State = OrderState.Cancelled;
+                        await _context.SaveChangesAsync();
+
+                        TempData["ErrorMessage"] = $"Unfortunately, one or more items went out of stock during your payment transaction. A refund has been issued.";
+                        return RedirectToAction(nameof(Index));
                     }
 
                     // Complete order transition
